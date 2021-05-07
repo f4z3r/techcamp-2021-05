@@ -46,7 +46,7 @@ if (CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     #string(APPEND CMAKE_CXX_FLAGS " -O3")
 
     # Allow the directories /shader and /data to be fetched by the web browser.
-    file(GLOB shader_files "./shader/*")
+    file(GLOB shader_files "./shaders/*")
     foreach (file ${shader_files})
         file(RELATIVE_PATH relative_file ${CMAKE_SOURCE_DIR} ${file})
         string(APPEND CMAKE_CXX_FLAGS " --preload-file ${file}@/${relative_file}")

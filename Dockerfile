@@ -23,7 +23,7 @@ ENV EMSDK_NODE=/opt/emsdk/node/14.15.5_64bit/bin/node
 WORKDIR /app
 COPY ./CMakeLists.txt ./CMakeLists.txt
 COPY ./lib ./lib
-COPY ./shader ./shader
+COPY ./shaders ./shaders
 COPY ./src ./src
 
 # build
