@@ -25,7 +25,13 @@
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #include <cmath>
+#include <functional>
 
+
+std::function<void()> registered_loop;
+void loop_iteration() {
+    registered_loop();
+}
 
 int main()
 {
@@ -82,7 +88,6 @@ int main()
 
 	// ---------------------------
 	// main rendering loop
-    std::function<void()> registered_loop;
     registered_loop =  [&]()
 	{
 		timeValue = glfwGetTime();
@@ -136,8 +141,8 @@ int main()
 		numberOfRenders += 1;
 
 		window.update();
-	}
-    emscripten_set_main_loop(registered_loop, 0, 1);
+	};
+    emscripten_set_main_loop(loop_iteration, 0, 1);
 
 	VAO.~VertexArray();
 	glfwTerminate();
@@ -145,10 +150,6 @@ int main()
 	return 0;
 }
 
-
-void loop_iteration() {
-    registered_loop();
-}
 
 // TODO: outsource this function to where it belongs
 unsigned int createTexture() {
