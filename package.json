@@ -1,0 +1,14 @@
+{
+  "name": "main",
+  "collaborators": [
+    "ipt"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "main.wasm",
+    "main.data",
+    "main.js"
+  ],
+  "module": "main.js",
+  "sideEffects": false
+}
