@@ -1,5 +1,5 @@
 # build image
-FROM ubuntu:hirsute as builder
+FROM ubuntu:focal as builder
 
 # set timezone for python install
 ENV TZ=Europe/Zurich
