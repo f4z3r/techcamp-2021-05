@@ -105,5 +105,5 @@ vec4 colormap(float x) {
 	float r = clamp(colormap_red(t) / 255.0, 0.0, 1.0);
 	float g = clamp(colormap_green(t) / 255.0, 0.0, 1.0);
 	float b = clamp(colormap_blue(t) / 255.0, 0.0, 1.0);
-	return vec4(r, g, b, 0.0);
+	return vec4(r, g, b, 1.0);
 }

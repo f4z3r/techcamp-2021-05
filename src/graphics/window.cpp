@@ -53,8 +53,8 @@ bool Window::init()
 		return false;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 	m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL);
 	
@@ -65,29 +65,22 @@ bool Window::init()
 	}
 
 	glfwMakeContextCurrent(m_Window);
-	glfwSetWindowUserPointer(m_Window, this);
-	glfwSetFramebufferSizeCallback(m_Window, Window::window_resize);
-	glfwSetKeyCallback(m_Window, key_callback);
-	glfwSetMouseButtonCallback(m_Window, mouse_button_callback);
-	glfwSetCursorPosCallback(m_Window, cursor_position_callback);
-	glfwSetScrollCallback(m_Window, scroll_callback);
-	glfwSetCursorPos(m_Window, m_Width / 2, m_Height / 2);
-	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetWindowUserPointer(m_Window, this);
+	//glfwSetFramebufferSizeCallback(m_Window, Window::window_resize);
+	//glfwSetKeyCallback(m_Window, key_callback);
+	//glfwSetMouseButtonCallback(m_Window, mouse_button_callback);
+	//glfwSetCursorPosCallback(m_Window, cursor_position_callback);
+	//glfwSetScrollCallback(m_Window, scroll_callback);
+	//glfwSetCursorPos(m_Window, m_Width / 2, m_Height / 2);
+	//glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	//glfwSwapInterval(0.0);
+    // get version info
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* version = glGetString(GL_VERSION);
+    std::cout << "Renderer: " << renderer << std::endl;
+    std::cout << "OpenGL version supported " << version << std::endl;
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-
-	std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
-
-	float last_mx = m_Width / 2.0f;
-	float last_my = m_Height / 2.0f;
-
-	return true;
+    return true;
 }
 
 void Window::clear() const
@@ -106,12 +99,9 @@ void Window::update()
 	memcpy(m_KeyState, m_Keys, MAX_KEYS);
 	memcpy(m_MouseState, m_MouseButtons, MAX_BUTTONS);
 
-	/*
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 		std::cout << "OpenGL Error: " << error << std::endl;
-	*/
-
 
 	glfwSwapBuffers(m_Window);
 }

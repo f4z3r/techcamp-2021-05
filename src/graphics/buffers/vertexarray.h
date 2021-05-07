@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "GLAD/glad.h"
+#include <GL/glew.h>
 #include "buffer.h"
 
 class VertexArray

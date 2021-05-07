@@ -12,7 +12,6 @@ add_executable(main
         src/graphics/buffers/buffer.cpp
         src/graphics/buffers/indexbuffer.cpp
         src/graphics/buffers/vertexarray.cpp
-        lib/GLAD/glad.c
         )
 
 target_include_directories(main PRIVATE

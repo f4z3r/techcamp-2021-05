@@ -1,4 +1,4 @@
-#include <GLAD/glad.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -53,21 +53,30 @@ int main()
 
 	// ---------------------------
 	// Window initialization
-	Window window("sphGL", 1200, 700);
+	Window window("sphGL", 500, 500);
 	Camera camera(glm::vec3(0.0f, 0.0f, 20.0f));
 	window.attachCamera(camera);
 
+	// init glew
+	glewExperimental = GL_TRUE;
+    GLenum err = glewInit();
+
+    if (err != GLEW_OK) {
+        glfwTerminate();
+        throw std::runtime_error(std::string("Could initialize GLEW, error = ") +
+                                 (const char*)glewGetErrorString(err));
+    }
 	unsigned int timestep = 0;
-	//std::string currentOutputStep = outSteps[timestep];
+	std::string currentOutputStep = outSteps[timestep];
 
 	// ---------------------------
 	// Initialize buffers & shader program
 	VertexArray VAO;
-	Buffer* VBO_pos = new Buffer(fileReader.m_Position.data(), fileReader.getPosSize(), 3);
-	Buffer* VBO_dens = new Buffer(fileReader.m_Density.data(), fileReader.getDensSize(), 1);
+    Buffer* VBO_pos = new Buffer(fileReader.m_Position.data(), fileReader.getPosSize(), 3);
+    Buffer* VBO_dens = new Buffer(fileReader.m_Density.data(), fileReader.getDensSize(), 1);
 
-	VAO.addBuffer(VBO_pos, 0);
-	VAO.addBuffer(VBO_dens, 2);
+    VAO.addBuffer(VBO_pos, 0);
+    VAO.addBuffer(VBO_dens, 2);
 
 	// Creating a shader program
 	Shader shaderProgram("../shaders/shader.vert", "../shaders/shader.frag");
@@ -80,7 +89,10 @@ int main()
 	float fps = 0.0f;
 
 	glEnable(GL_DEPTH_TEST);
-	// glEnable(GL_PROGRAM_POINT_SIZE);
+    glDepthFunc(GL_LESS);
+
+    // TODO: Do we need this? Seems not to be defined for webgl.
+    // glEnable(GL_PROGRAM_POINT_SIZE);
 
 	int numberOfRenders = 0;
 	float timeValue = 0.0f;
@@ -92,12 +104,11 @@ int main()
 	// main rendering loop
     registered_loop =  [&]()
 	{
-		timeValue = glfwGetTime();
-		deltaTime = timeValue - lastFrame;
+
+		deltaTime = glfwGetTime() - lastFrame;
 		lastFrame = timeValue;
 
-		glfwPollEvents();
-		window.detectWindowDimensionChange();
+        window.detectWindowDimensionChange();
 		window.processInput(deltaTime, timestep, n_timesteps - 1, pointSize);
 		window.clear();
 		
@@ -125,18 +136,18 @@ int main()
 				timestep++;
 			}
 
-			VBO_pos->updateBuffer(fileReader.getPosSize() / fileReader.getNTimesteps(), fileReader.getPositionP(timestep));
-			VBO_dens->updateBuffer(fileReader.getDensSize() / fileReader.getNTimesteps(), fileReader.getDensityP(timestep));
+            VBO_pos->updateBuffer(fileReader.getPosSize() / fileReader.getNTimesteps(), fileReader.getPositionP(timestep));
+            VBO_dens->updateBuffer(fileReader.getDensSize() / fileReader.getNTimesteps(), fileReader.getDensityP(timestep));
 		}
 		
 		//-------------
-		// std::cout << "before draw" << std::endl;
+//		std::cout << "before draw" << std::endl;
 		// draw call
 		VAO.bind();
 		glDrawArrays(GL_POINTS, 0, n_vertices);
 		VAO.unbind();
 
-		// std::cout << "after draw" << std::endl;
+//		std::cout << "after draw" << std::endl;
 
 		if (numberOfRenders % 1000 == 0) {
 			fps = 1000 / (timeValue - lastTimeValue);
@@ -146,7 +157,9 @@ int main()
 		numberOfRenders += 1;
 
 		window.update();
-	};
+        glfwPollEvents();
+
+    };
   emscripten_set_main_loop(loop_iteration, 0, 1);
 
 	VAO.~VertexArray();
