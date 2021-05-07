@@ -1,24 +1,26 @@
-in vec3 position;
-in vec3 normal;
-in vec4 color;
+//VERTEX SHADER
 
-uniform mat4 projection;
+#version 300 es
+precision mediump float;
+precision mediump int;
+precision mediump sampler2DArray;
+
+layout (location = 0) in vec3 position;		  // vertex attribute 0 is a 3-dim vector
+layout (location = 2) in float density;
+
+uniform float pointSize;
+
+out float dens;
+
+// uniforms are global, unique per shader program object, accessable by any shader
+uniform mat4 transform;
+uniform mat4 model;
 uniform mat4 view;
+uniform mat4 projection;
 
-out vec4 fPosition;
-out vec4 fColor;
-out vec4 fLightPosition;
-out vec3 fNormal;
-
-void main(void)
+void main()
 {
-    fPosition = view * vec4(position,1.0);
-    fLightPosition = view * vec4(0.0,0.0,1.0,1.0);
-
-    fColor = color;
-    fNormal = vec3(view * vec4(normal,0.0));
-
-    gl_Position = projection * fPosition;
-    /*gl_Position.x *= 1000.0f;*/
-    /*gl_Position.y = 0.0;*/
+    gl_Position = projection * view * model * transform * vec4(position, 1.0f);
+	gl_PointSize = pointSize;
+	dens = density;
 }

@@ -22,6 +22,10 @@
 #include "buffers/indexbuffer.h"
 #include "buffers/vertexarray.h"
 
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#include <cmath>
+
 
 int main()
 {
@@ -58,7 +62,7 @@ int main()
 	VAO.addBuffer(VBO_dens, 2);
 
 	// Creating a shader program
-	Shader shaderProgram("../src/shaders/shader.vs", "../src/shaders/shader.fs");
+	Shader shaderProgram("../src/shaders/shader.vert", "../src/shaders/shader.frag");
 	shaderProgram.enable();
 
 	float pointSize = 1.0f;
@@ -78,7 +82,8 @@ int main()
 
 	// ---------------------------
 	// main rendering loop
-	while (!window.closed())
+    std::function<void()> registered_loop;
+    registered_loop =  [&]()
 	{
 		timeValue = glfwGetTime();
 		deltaTime = timeValue - lastFrame;
@@ -132,11 +137,17 @@ int main()
 
 		window.update();
 	}
+    emscripten_set_main_loop(registered_loop, 0, 1);
 
 	VAO.~VertexArray();
 	glfwTerminate();
 
 	return 0;
+}
+
+
+void loop_iteration() {
+    registered_loop();
 }
 
 // TODO: outsource this function to where it belongs
