@@ -34,6 +34,7 @@ private:
 
 public:
 	Window(const char *name, int width, int height);
+  void detectWindowDimensionChange();
 	~Window();
 	void clear() const;
 	void update();

@@ -35,6 +35,8 @@ void loop_iteration() {
 
 int main()
 {
+
+	std::cout << "started" << std::endl;
 	// ---------------------------
 	// Data management
 	int startIdx = 50;
@@ -78,7 +80,7 @@ int main()
 	float fps = 0.0f;
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_PROGRAM_POINT_SIZE);
+	// glEnable(GL_PROGRAM_POINT_SIZE);
 
 	int numberOfRenders = 0;
 	float timeValue = 0.0f;
@@ -95,6 +97,7 @@ int main()
 		lastFrame = timeValue;
 
 		glfwPollEvents();
+		window.detectWindowDimensionChange();
 		window.processInput(deltaTime, timestep, n_timesteps - 1, pointSize);
 		window.clear();
 		
@@ -125,13 +128,15 @@ int main()
 			VBO_pos->updateBuffer(fileReader.getPosSize() / fileReader.getNTimesteps(), fileReader.getPositionP(timestep));
 			VBO_dens->updateBuffer(fileReader.getDensSize() / fileReader.getNTimesteps(), fileReader.getDensityP(timestep));
 		}
-
 		
 		//-------------
+		// std::cout << "before draw" << std::endl;
 		// draw call
 		VAO.bind();
 		glDrawArrays(GL_POINTS, 0, n_vertices);
 		VAO.unbind();
+
+		// std::cout << "after draw" << std::endl;
 
 		if (numberOfRenders % 1000 == 0) {
 			fps = 1000 / (timeValue - lastTimeValue);
@@ -142,13 +147,14 @@ int main()
 
 		window.update();
 	};
-    emscripten_set_main_loop(loop_iteration, 0, 1);
+  emscripten_set_main_loop(loop_iteration, 0, 1);
 
 	VAO.~VertexArray();
 	glfwTerminate();
 
 	return 0;
 }
+
 
 
 // TODO: outsource this function to where it belongs

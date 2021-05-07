@@ -1,6 +1,9 @@
 #include <cstring>
 #include "window.h"
 
+#include <emscripten.h>
+#include <emscripten/html5.h>
+
 Window::Window(const char *title, int width, int height)
 {
 	m_Title = title;
@@ -23,6 +26,19 @@ Window::Window(const char *title, int width, int height)
 		m_MouseClicked[i] = false;
 	}
 }
+
+void Window::detectWindowDimensionChange() {
+  int w, h;
+  emscripten_get_canvas_element_size("canvas", &w, &h);
+
+  bool dimensionChanged = (w != m_Width or h != m_Height);
+  if (dimensionChanged) {
+    m_Width = w;
+    m_Height = h;
+    glViewport(0, 0, m_Width, m_Height);
+  }
+}
+
 
 Window::~Window()
 {
