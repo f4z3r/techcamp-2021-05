@@ -68,7 +68,7 @@ int main()
 	VAO.addBuffer(VBO_dens, 2);
 
 	// Creating a shader program
-	Shader shaderProgram("../src/shaders/shader.vert", "../src/shaders/shader.frag");
+	Shader shaderProgram("../shaders/shader.vert", "../shaders/shader.frag");
 	shaderProgram.enable();
 
 	float pointSize = 1.0f;
