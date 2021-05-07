@@ -1,11 +1,11 @@
-//FRAGMENT SHADER
-
 #version 300 es
 precision mediump float;
 precision mediump int;
 precision mediump sampler2DArray;
 
 in float dens;
+
+layout(location = 0) out vec4 diffuseColor;
 
 vec4 colormap(float x);
 
@@ -16,9 +16,8 @@ void main()
 	if (radiusSqr > 1.0) {
 		discard;
 	}
-    gl_FragColor = colormap(dens/8);
-	gl_FragColor.a = 0.0;
-} 
+	diffuseColor = colormap(dens / 8.);
+}
 
 float colormap_up(float x) {
 	return (1.88200166286601E-03 * x - 4.65545143706978E-01) * x + 2.51008231568770E+02;
@@ -106,5 +105,5 @@ vec4 colormap(float x) {
 	float r = clamp(colormap_red(t) / 255.0, 0.0, 1.0);
 	float g = clamp(colormap_green(t) / 255.0, 0.0, 1.0);
 	float b = clamp(colormap_blue(t) / 255.0, 0.0, 1.0);
-	return vec4(r, g, b, 1.0);
+	return vec4(r, g, b, 0.0);
 }

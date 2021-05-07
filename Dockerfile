@@ -20,29 +20,30 @@ ENV EM_CONFIG=/opt/emsdk/.emscripten
 ENV EMSDK_NODE=/opt/emsdk/node/14.15.5_64bit/bin/node
 
 # copy data
+ENV CC=emcc
+ENV CXX=em++
 WORKDIR /app
 COPY ./CMakeLists.txt ./CMakeLists.txt
 COPY ./lib ./lib
 COPY ./shaders ./shaders
+COPY ./SampleData ./SampleData
 COPY ./src ./src
 
 # build
 WORKDIR /app/build_emscripten
-ENV CC=emcc
-ENV CXX=em++
 RUN cmake -G "Ninja" ..
 RUN ninja
 
 ###############
 # runtime image
-FROM gcr.io/distroless/python3-debian10
-
-WORKDIR /app
-EXPOSE 8080
+# FROM gcr.io/distroless/python3-debian10
+#
+# WORKDIR /app
+# EXPOSE 8080
 
 COPY ./assets/ ./
 
-COPY --from=builder /app/build_emscripten .
+# COPY --from=builder /app/build_emscripten .
 
-ENTRYPOINT ["python"]
+ENTRYPOINT ["python3"]
 CMD ["-m", "http.server", "8080"]

@@ -33,6 +33,7 @@ if (CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     #string(APPEND CMAKE_CXX_FLAGS " -s USE_GLFW=3")
 
     string(APPEND CMAKE_CXX_FLAGS " -s DEMANGLE_SUPPORT=1")
+    string(APPEND CMAKE_CXX_FLAGS " -s ALLOW_MEMORY_GROWTH=1")
     string(APPEND CMAKE_CXX_FLAGS " -s DISABLE_EXCEPTION_CATCHING=1")
     string(APPEND CMAKE_CXX_FLAGS " -s USE_GLFW=3")
     string(APPEND CMAKE_CXX_FLAGS " -s USE_WEBGL2=1")
@@ -48,6 +49,14 @@ if (CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     # Allow the directories /shader and /data to be fetched by the web browser.
     file(GLOB shader_files "./shaders/*")
     foreach (file ${shader_files})
+        file(RELATIVE_PATH relative_file ${CMAKE_SOURCE_DIR} ${file})
+        string(APPEND CMAKE_CXX_FLAGS " --preload-file ${file}@/${relative_file}")
+        message(STATUS CMAKE_CXX_FLAGS " --preload-file ${file}@/${relative_file}")
+    endforeach ()
+
+    # Allow the directories /SampleData to be fetched by the web browser.
+    file(GLOB data_files "./SampleData/*")
+    foreach (file ${data_files})
         file(RELATIVE_PATH relative_file ${CMAKE_SOURCE_DIR} ${file})
         string(APPEND CMAKE_CXX_FLAGS " --preload-file ${file}@/${relative_file}")
         message(STATUS CMAKE_CXX_FLAGS " --preload-file ${file}@/${relative_file}")
